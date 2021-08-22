@@ -1,0 +1,212 @@
+<mvc:View   controllerName="project.employees.controller.NewEmployee" 
+            xmlns:mvc="sap.ui.core.mvc" 
+            displayBlock="true" 
+            xmlns="sap.m"  
+            xmlns:core="sap.ui.core"
+            xmlns:l="sap.ui.layout"
+            xmlns:f="sap.ui.layout.form"
+            >
+    <NavContainer id="wizardNavContainer">      
+        <pages>
+
+            <Page id="wizardContentPage" title="{i18n>pageNewEmployee}">
+                <content>
+
+                    <Wizard id="newEmployeeWizard" complete="wizardCompletedHandler">
+                        
+                        <WizardStep id="employeeTypeStep" 
+                                    title="{i18n>typeEmployeTitleStep}"
+                                    validated="false">
+                            <MessageStrip
+                                        type="Information"
+                                        text="{i18n>typeEmployeInformationStep}"
+                                        class="sapUiSmallMarginTopBottom"
+                                        showIcon="true" />
+
+                            <FlexBox    height="100px"
+                                        alignItems="Center"
+                                        justifyContent="Center">          
+                                
+                                <Button id="btnInternalEmployee" text="{i18n>internalEmployee}" class="sapUiSmallMarginEnd" press="onInternalEmployee"></Button>   
+                                <Button id="btnSelfEmployee" text="{i18n>selfEmployee}" class="sapUiSmallMarginEnd" press="onSelfEmployee"></Button>
+                                <Button id="btnManagerEmployee" text="{i18n>managerEmployee}" class="sapUiSmallMarginEnd" press="onManagerEmployee" ></Button>  
+            
+                            </FlexBox>       
+                        </WizardStep>
+
+
+                        <WizardStep id="employeeDataStep" title="{i18n>dataEmployeeTitleStep}" validated="false">
+                            <MessageStrip
+                                        type="Information"
+                                        text="{i18n>dataEmployeInformationStep}"
+                                        class="sapUiSmallMarginTopBottom"
+                                        showIcon="true" />
+
+                            <f:SimpleForm editable="true"> 
+                                    
+
+                                <Label text="Tipo"/>
+                                <Text text="{= ${/Type} === '0' ? ${i18n>internalEmployee} : 
+                                            ${/Type} === '1' ? ${i18n>selfEmployee} :
+                                            ${/Type} === '2' ? ${i18n>managerEmployee} : '' }" />
+
+                                <Label text="{i18n>firstName}" required="true"/>
+                                <Input  valueState="{/FirstNameState}" 
+                                                    id="firstName" 
+                                                    value="{/FirstName}"
+                                                    change="updateFirstName" />
+                                
+                                <Label text="{i18n>lastName}" required="true"/>
+                                <Input  valueState="{/LastNameState}" 
+                                                    id="lastName" 
+                                                    value="{/LastName}"
+                                                    change="updateLastName"/>
+                                            
+                                <Label text="{= ${/Type} === '1' ? 'CIF' : 'DNI' }" required="true"/>
+                                <Input  valueState="{/DniState}" 
+                                                    id="dni" 
+                                                    value="{/Dni}"
+                                                    change="updateDni"/>
+
+                                <Label text="{= ${/Type} === '1' ? ${i18n>dailyPrice} : ${i18n>annualGrossSalary} }" />
+                                <Slider id="ammount" 
+                                                    showHandleTooltip="true"
+                                                    enableTickmarks="true" 
+                                                    class="sapUiMediumMarginBottom" 
+                                                    width="100%" 
+                                                    value="{/Ammount}"/>
+
+                                <Label text="{i18n>incorporationDate}"/>
+                                <DatePicker dateValue="{/IncorporationDate}" 
+                                                        change="updateIncorporationDate" 
+                                                        valueState="{/IncorporationDateState}"/>
+
+                            </f:SimpleForm>        
+                
+                        </WizardStep>
+
+                        <WizardStep id="employeeAditionalInformationStep" title="{i18n>aditionalInformationEmployeeTitleStep}">
+                            <MessageStrip
+                                            type="Information"
+                                            text="{i18n>aditionalInformationInformationStep}"
+                                            class="sapUiSmallMarginTopBottom"
+                                            showIcon="true" />
+                            <VBox >
+                                <Label text="{i18n>comments}"/>
+                                <TextArea id="comments" 
+                                                value="{/Comments}" 
+                                                maxLength="200" 
+                                                width="100%"/>     
+                            </VBox>
+                            <VBox >
+                                <UploadCollection   id="uploadcollection" 
+                                                maximumFilenameLength="55"
+                                                maximumFileSize="10"
+                                                multiple="true"
+                                                sameFilenameAllowed="true"
+                                                instantUpload="false"
+                                                uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
+                                                change="onFileChange"
+                                                uploadComplete="onFileUploadComplete"
+                                                beforeUploadStarts="onFileBeforeUpload"
+                                                fileDeleted="onFileDeleted"
+                                />
+                            </VBox>
+                        </WizardStep>
+
+                    </Wizard>
+                </content>
+                <footer>
+                    <OverflowToolbar>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>cancel}" press="handleWizardCancel"/>
+                    </OverflowToolbar>
+                </footer>
+            </Page>
+            <Page id="wizardReviewPage" showHeader="false">
+			    <content>
+                    
+				    <f:SimpleForm
+						    title="1. {i18n>typeEmployeTitleStep}"
+						    minWidth="1024"
+							editable="false"
+							layout="ResponsiveGridLayout">
+							
+                        <f:content>
+						    <Label text="Tipo"/>
+                            <Text text="{= ${/Type} === '0' ? ${i18n>internalEmployee} : 
+                                           ${/Type} === '1' ? ${i18n>selfEmployee} :
+                                           ${/Type} === '2' ? ${i18n>managerEmployee} : '' }" />
+						</f:content>
+                        <Link press="editStepOne" text="{i18n>edit}" />
+					</f:SimpleForm>
+
+					<f:SimpleForm
+								title="2. {i18n>dataEmployeeTitleStep}"
+								minWidth="1024"
+								editable="false"
+								layout="ResponsiveGridLayout">
+							
+                        <f:content>
+							<Label text="{i18n>firstName}" />
+                            <Text    text="{/FirstName}"/>
+                            
+                            <Label text="{i18n>lastName}"/>
+                            <Text text="{/LastName}"/>
+                                        
+                            <Label text="{= ${/Type} === '1' ? 'CIF' : 'DNI' }"/>
+                            <Text  text="{/Dni}" />
+
+                            <Label text="{= ${/Type} === '1' ? ${i18n>dailyPrice} : ${i18n>annualGrossSalary} }" />
+                            <Text  text="{/Ammount}"/>
+
+                            <Label text="{i18n>incorporationDate}"/>
+                            <Text text="{path:'/IncorporationDate', type:'sap.ui.model.odata.type.Date'}" />
+                            
+							<Link press="editStepTwo" text="{i18n>edit}" />
+                            
+                            <Label/>
+                            <MessageStrip
+                                            type="Error"
+                                            text="Existen Errores de validación en los datos del empeleado"
+                                            class="sapUiSmallMarginTopBottom"
+                                            showIcon="true"
+                                            visible="{= ${/Valid} === true ? false : true }" />
+						</f:content>
+                       
+					</f:SimpleForm>
+
+					<f:SimpleForm
+								title="3. {i18n>aditionalInformationEmployeeTitleStep}"
+								minWidth="1024"
+								editable="false"
+								layout="ResponsiveGridLayout">
+					    <f:content>
+						    <Label text="{i18n>comments}"/>
+							<Text text="{/Comments}"/>
+							<Label text="{i18n>attachments}"/>
+                            <Text text= "{/FilesCount} {i18n>files}" />
+                            <Label/>
+                            <List id="filesNmame" items="{/FilesName}" >
+                                <StandardListItem
+                                    title="{Name}" />
+                                </List> 
+                            <Link press="editStepThree" text="{i18n>edit}"  />
+						</f:content>
+					</f:SimpleForm>
+				
+				</content>
+				
+                <footer>
+				    <Bar>
+					    <contentRight>
+						    <Button text="{i18n>guardar}" press="handleWizardSubmit" enabled="{/Valid}"/>
+                            <Button text="{i18n>cancel}" press="handleWizardCancel"/>
+						</contentRight>
+					</Bar>
+				</footer>
+			</Page>
+	    </pages>
+    
+    </NavContainer>
+</mvc:View>

@@ -1,0 +1,27 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"> 
+    <Panel> 
+     
+        <Table id="tableEmployee" items="{employeeModel>/Users}">
+            <columns>
+                <Column visible="true" >
+                    <header>
+                        <Label text="Nombre" />
+                    </header>
+                </Column>
+                <Column visible="true">
+                    <header>
+                        <Label text="Apellido" />
+                    </header>
+                </Column>
+             </columns>
+            <items>
+                <ColumnListItem  type="Navigation" press="showEmployee">
+                    <cells>
+                        <Label text="{employeeModel>FirstName}" />
+                        <Label text="{employeeModel>LastName}" />
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </Panel>
+</core:FragmentDefinition>

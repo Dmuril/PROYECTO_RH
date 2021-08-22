@@ -1,0 +1,41 @@
+<mvc:View   controllerName="project.employees.controller.EmployeesList" 
+            xmlns:mvc="sap.ui.core.mvc" 
+            displayBlock="true" 
+            xmlns="sap.m"  
+            xmlns:l="sap.ui.layout"
+            xmlns:core="sap.ui.core">
+
+    <SplitContainer>
+        <masterPages>
+			<Page   id="master"
+                    showHeader="false"
+                    class="sapUiSmallMarginTopBottom"
+				>
+				<List   id="listEmployees"
+                        class="sapUiResponsiveMargin"
+                        width="auto"
+                        items="{employeeModelFilter>/results}"
+                        
+                >
+                    <headerToolbar>
+                        <Toolbar >
+                            <Button type="Back" tooltip="Back" press="onBack"/>
+                            <SearchField search="onFilter"
+                                         value="{jsonModelFilter>/valueToFilter}"  />
+                        </Toolbar>
+                    </headerToolbar>
+
+                    <items>
+                        <StandardListItem   title="{employeeModelFilter>FirstName} {employeeModelFilter>LastName}" 
+                                            description="{employeeModelFilter>Dni}" 
+                                            press="showEmployee" 
+                                            type="Active"/>
+                    </items>
+                </List> 
+			</Page>
+		</masterPages> 
+        <detailPages>
+        	<mvc:XMLView id="detailEmployeeView" viewName="project.employees.view.EmployeeDetails"></mvc:XMLView>
+        </detailPages>
+    </SplitContainer>   
+</mvc:View>
