@@ -11,6 +11,25 @@ sap.ui.define([
     return Controller.extend("project.employees.controller.EmployeesList", {
 
         onInit: function () {
+
+            this._bus = sap.ui.getCore().getEventBus();
+           
+            //Este se ejecuta solo una vez.
+            this.filterMyData();
+
+            var oJSONModelFilter = new sap.ui.model.json.JSONModel({
+                valueToFilter: "",
+            });
+
+            this.getView().setModel(oJSONModelFilter, "jsonModelFilter");
+            
+            this._bus.subscribe("flexible", "onDeletedUser", this.onDeletedUser, this );
+
+            //Se se ejecutara siempre despues de la primera vez
+            this._bus.subscribe("flexible", "_filterData", this._filterMyData, this );
+        },
+
+        filterMyData : function(){
             //Trabajar solo con los datos de mi SapId
             oView = this.getView();
              this.getOwnerComponent().getModel("employeeModel").read("/Users", {
@@ -18,18 +37,17 @@ sap.ui.define([
               			new sap.ui.model.Filter("SapId", "EQ", this.getOwnerComponent().SapId)
               		],
               		success: function (oData) {
-              			var employeeModelFilter = new JSONModel(oData);
-                         oView.setModel(employeeModelFilter, "employeeModelFilter");
-                         oView.getModel("employeeModelFilter").refresh();
+                           var employeeModelFilter = new JSONModel(oData);
+                          //var oList = this.getView().byId("listEmployees");
+                          oView.setModel(employeeModelFilter, "employeeModelFilter");
+                          oView.getModel("employeeModelFilter").refresh();
+
               		}
             });
+        },
 
-            var oJSONModelFilter = new sap.ui.model.json.JSONModel({
-                valueToFilter: "",
-            });
-
-            this.getView().setModel(oJSONModelFilter, "jsonModelFilter");
-
+        _filterMyData: function(catagory, nameEvent, otro){
+            this.filterMyData();
         },
 
         //Mostrar el empleado seleccionado en la vista lateral derecha
@@ -38,13 +56,19 @@ sap.ui.define([
             var objectContext = oContext.getObject();
             
             var path = "/Users(EmployeeId='" + objectContext.EmployeeId + "',SapId='" + objectContext.SapId + "')";
-            var detailView = this.getView().byId("detailEmployeeView");
-            detailView.bindElement("employeeModel>" + path  );
-
-            var oJSONModelConfig = detailView.getModel("jsonModelConfig");
-            oJSONModelConfig.setProperty("/isSelectedOne", true);
-
+            this._bus.publish("flexible", "showEmployee", path );
         }, 
+
+        onDeletedUser: function (catagory, nameEvent, employeeId) {
+            // var model  = this.getView().getModel("employeeModelFilter");
+            // var oFilter = new Filter({ filters: [  new Filter("EmployeeId", FilterOperator.NE , employeeId)]});
+            // var oList = this.getView().byId("listEmployees");
+            // var oBinding = oList.getBinding("items");
+            // oBinding.filter(oFilter)   
+            // model.setData(oList.getItems() );
+            // debugger;
+            this.filterMyData();
+        },
 
         onFilter: function(oEvent) {
             //var data = this.getView().getModel("employeeModelFilter").getData();
@@ -74,6 +98,8 @@ sap.ui.define([
                 oRouter.navTo("RouteMain", true);
             }
         },
+
+       
 
     });
 });

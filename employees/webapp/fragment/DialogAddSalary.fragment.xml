@@ -1,0 +1,37 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" 
+                         xmlns="sap.m"
+                         xmlns:f="sap.ui.layout.form"> 
+    <Dialog id="dialogAddSalary"
+            title="{i18n>newPromotion}"
+
+    >   
+        <f:SimpleForm editable="true"> 
+             <VBox >
+                <Label text="{= ${employeeModel>Type} === '1' ? ${i18n>dailyPrice} : ${i18n>annualGrossSalary} }"/>
+                <Input value="{jsonModelNewSalary>/Ammount}" 
+                       valueState="{jsonModelNewSalary>/AmmountState}"
+                       change="updateAmmount"
+                       	type="Number"
+                       />
+
+                <Label text="{i18n>incorporationDate}"  class="sapUiSmallMarginTop"/>
+                <DatePicker dateValue="{jsonModelNewSalary>/CreationDate}" 
+                            change="updateCreationDate" 
+                            valueState="{jsonModelNewSalary>/CreationDateState}"/>
+
+            
+                <Label text="{i18n>comments}" class="sapUiSmallMarginTop"/>
+                <TextArea id="comments" 
+                        value="{jsonModelNewSalary>/Comments}" 
+                        maxLength="200" 
+                        width="100%"/>     
+            </VBox>            
+        </f:SimpleForm>    
+        <beginButton >
+            <Button text="{i18n>accept}" press="onSaveNewSalary" enabled="{jsonModelNewSalary>/Valid}"/>
+        </beginButton>
+        <endButton>
+            <Button text="{i18n>cancel}" press="onCancelnNewSalary"/>
+        </endButton>    
+    </Dialog>
+</core:FragmentDefinition>

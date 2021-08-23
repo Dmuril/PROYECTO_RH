@@ -208,7 +208,7 @@ sap.ui.define([
             let fileName = oEvent.getParameter("fileName");
             let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
                 name: "slug",
-                value: this.getOwnerComponent().SapId + ";" + this.model.getProperty("EmployeeId") + ";" + fileName,
+                value: this.getOwnerComponent().SapId + ";" + this.model.getProperty("/EmployeeId") + ";" + fileName,
             });
 
             oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
@@ -265,11 +265,12 @@ sap.ui.define([
                         //Enviar
                         oModel.create("/Users", body, {
                             success: function (data, response) {
-                                this.model.setProperty("EmployeeId", data.EmployeeId);
+                                this.model.setProperty("/EmployeeId", data.EmployeeId);
                                 this.onStartUpload();
                                 let mensaje = oResourceBundle.getText("employeeCreated") + ": " + data.EmployeeId;
                                 MessageBox.success( mensaje, {
                                    onClose: function () {
+                                        oModel.refresh();
                                         this._Cancel();
                                    }.bind(this) 
                                 } );

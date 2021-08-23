@@ -19,6 +19,7 @@
                 >
                     <headerToolbar>
                         <Toolbar >
+                            
                             <Button type="Back" tooltip="Back" press="onBack"/>
                             <SearchField search="onFilter"
                                          value="{jsonModelFilter>/valueToFilter}"  />

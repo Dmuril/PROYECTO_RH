@@ -1,10 +1,11 @@
 <mvc:View controllerName="project.employees.controller.EmployeeDetails"
+          xmlns:c="sap.suite.ui.commons"
           xmlns:mvc="sap.ui.core.mvc"
           displayBlock="true"
           xmlns="sap.m"
           xmlns:core="sap.ui.core">
     <Page title="{i18n>employeeDetails}" 
-          showHeader="{jsonModelConfig>/isSelectedOne}"
+          showHeader="true"
           showFooter="{jsonModelConfig>/isSelectedOne}">
 
         <Panel height="100%" visible="{= ${jsonModelConfig>/isSelectedOne} === false ? true : false  }">
@@ -16,48 +17,93 @@
  				<Label text="{i18n>selectAEmployee}"/>
 			</FlexBox>
         </Panel>
-        <Panel visible="{jsonModelConfig>/isSelectedOne}">
-            
-            <HBox  class="sapUiSmallMarginTopBottom sapUiSmallMarginEnd" >
-                <core:Icon src="{= ${employeeModel>Type}==='0' ? 'sap-icon://employee-pane' :
+        <VBox visible="{jsonModelConfig>/isSelectedOne}" >
+
+                <HBox  class="sapUiSmallMarginTopBottom sapUiSmallMarginEnd sapUiSmallMarginBegin" >
+                    
+                    <core:Icon src="{= ${employeeModel>Type}==='0' ? 'sap-icon://employee-pane' :
                                    ${employeeModel>Type}==='1' ? 'sap-icon://employee' : 
                                    ${employeeModel>Type}==='2' ? 'sap-icon://leads' : '' }" 
                             size="2.2rem"
                             color="Default"
                             class="sapUiSmallMarginEnd"/>
-                <VBox  > 
-                    <Label text="{employeeModel>FirstName} {employeeModel>LastName}" class="sizedText" />
-                    <Label text="{employeeModel>Dni}" />
-                </VBox>
-            </HBox>
+                    <VBox > 
+                        <Label text="{employeeModel>FirstName} {employeeModel>LastName}" class="sizedText" />
+                        <Label text="{employeeModel>Dni}" />
+                    </VBox>
+                </HBox>
 
-            <FlexBox alignItems="Start" justifyContent="SpaceBetween">
+                <FlexBox alignItems="Start" justifyContent="SpaceBetween" class="sapUiSmallMarginEnd sapUiSmallMarginBegin">
+                    <items>
+                        <HBox >
+                            <Label text="{i18n>incorporationDate}:" class="sapUiTinyMarginEnd" />
+                            <Label text="{path:'employeeModel>CreationDate', type:'sap.ui.model.odata.type.Date'}" />
+                        </HBox>
+                        <HBox >
+                            <Label text="{i18n>comments}:" class="sapUiTinyMarginEnd" />
+                            <Label text="{employeeModel>Comments}" />
+                        </HBox>
+                        
+                    </items>
+                </FlexBox>
+
+                <HBox class="sapUiSmallMarginEnd sapUiSmallMarginBegin sapUiSmallMarginTopBottom"  >
+                    <Label text="{i18n>type}:" class="sapUiTinyMarginEnd" />
+                    <Label text="{= ${employeeModel>Type} === '0' ? ${i18n>internalEmployee} : 
+                                    ${employeeModel>Type} === '1' ? ${i18n>selfEmployee} :
+                                    ${employeeModel>Type} === '2' ? ${i18n>managerEmployee} : '' }" />
+                </HBox>    
+      
+
+                    <IconTabBar
+                id="idIconTabBarMulti"
+                expanded="{device>/isNoPhone}"
+                class="sapUiResponsiveContentPadding">
                 <items>
-                    <HBox >
-                        <Label text="{i18n>incorporationDate}:" class="sapUiTinyMarginEnd" />
-                        <Label text="{path:'employeeModel>CreationDate', type:'sap.ui.model.odata.type.Date'}" />
-                    </HBox>
-                    <HBox >
-                        <Label text="{i18n>comments}:" class="sapUiTinyMarginEnd" />
-                        <Label text="{employeeModel>Comments}" />
-                    </HBox>
-                    
+                    <IconTabFilter icon="sap-icon://attachment" key="files" text="{i18n>files}">
+                         <UploadCollection   id="uploadcollection" 
+                                                maximumFilenameLength="55"
+                                                maximumFileSize="10"
+                                                multiple="true"
+                                                sameFilenameAllowed="true"
+                                                instantUpload="true"
+                                                uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
+                                                change="onFileChange"
+                                                uploadComplete="onFileUploadComplete"
+                                                beforeUploadStarts="onFileBeforeUpload"
+                                                fileDeleted="onFileDeleted"
+                                />
+                    </IconTabFilter>
+                    <IconTabFilter icon="sap-icon://money-bills" key="histori" text="{i18n>histori}">
+                        <c:Timeline
+                                    id="idTimeline"
+                                    enableDoubleSided="true"
+                                    content="{employeeModel>UserToSalary}" 
+                                    groupBy="{employeeModel>CreationDate}">
+                            <c:TimelineItem
+                                id="idTemplateItem"
+                                dateTime="{employeeModel>CreationDate}"
+                                title="{ parts : [  { path:'employeeModel>Ammount' }, 
+                                                    { path:'employeeModel>Waers'  }],
+                                         type:'sap.ui.model.type.Currency'}" 
+                                text="{employeeModel>Comments}"
+                                userName="{employeeModel>FirstName} {employeeModel>LastName}"
+
+                            >
+                            </c:TimelineItem>
+                            
+                        </c:Timeline>
+                    </IconTabFilter>
                 </items>
-            </FlexBox>
+            </IconTabBar>
 
-            <HBox >
-                <Label text="{i18n>type}:" class="sapUiTinyMarginEnd" />
-                <Label text="{= ${employeeModel>Type} === '0' ? ${i18n>internalEmployee} : 
-                                ${employeeModel>Type} === '1' ? ${i18n>selfEmployee} :
-                                ${employeeModel>Type} === '2' ? ${i18n>managerEmployee} : '' }" />
-            </HBox>
+           </VBox>
 
-        </Panel>
         <footer>
 		    <Bar>
 			    <contentRight>
-				    <Button text="{i18n>unsuscribe}" press="" enabled="{}"/>
-                    <Button text="{i18n>ascend}" press=""/>
+				    <Button text="{i18n>unsuscribe}" press="onDeleteEmployee"/>
+                    <Button text="{i18n>ascend}" press="onPromotion"/>
 				</contentRight>
 			</Bar>
 		</footer>
