@@ -22,8 +22,10 @@
                 </content>
             </Panel>
              <Panel headerText="{i18n>orderMenu}" expandable="true" width="auto" class="sapUiResponsiveMargin" expanded="true">
-               <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"  press="onPress"  >
-                        <TileContent footer="{i18n>signOrder}">
+               <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"  
+                             id="singOrder"
+                            url="https://59dd8479trial-dev-logali-approuter.cfapps.us10.hana.ondemand.com/logaligroupEmployees/index.html" >
+                        <TileContent footer="{i18n>signOrder}" >
                             <ImageContent src="sap-icon://signature"/>
                         </TileContent>
 	            </GenericTile> 

@@ -55,10 +55,10 @@
                 </HBox>    
       
 
-                    <IconTabBar
-                id="idIconTabBarMulti"
-                expanded="{device>/isNoPhone}"
-                class="sapUiResponsiveContentPadding">
+                <IconTabBar
+                            id="idIconTabBarMulti"
+                            expanded="{device>/isNoPhone}"
+                            class="sapUiResponsiveContentPadding">
                 <items>
                     <IconTabFilter icon="sap-icon://attachment" key="files" text="{i18n>files}">
                          <UploadCollection   id="uploadcollection" 
@@ -79,16 +79,19 @@
                                     id="idTimeline"
                                     enableDoubleSided="true"
                                     content="{employeeModel>UserToSalary}" 
-                                    groupBy="{employeeModel>CreationDate}">
+                                    groupByType="Year"
+                                    groupBy="CreationDate"
+                                    showHeaderBar="false"
+                                    alignment="Left"
+                                    sortOldestFirst="true"
+                                    >
                             <c:TimelineItem
                                 id="idTemplateItem"
                                 dateTime="{employeeModel>CreationDate}"
-                                title="{ parts : [  { path:'employeeModel>Ammount' }, 
+                                userName="{ parts : [  { path:'employeeModel>Ammount' }, 
                                                     { path:'employeeModel>Waers'  }],
                                          type:'sap.ui.model.type.Currency'}" 
                                 text="{employeeModel>Comments}"
-                                userName="{employeeModel>FirstName} {employeeModel>LastName}"
-
                             >
                             </c:TimelineItem>
                             
